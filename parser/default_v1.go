@@ -13,7 +13,7 @@ type DefaultV1 struct {
 	baseDir    string
 }
 
-type stateDef struct {
+type stepDef struct {
 	ID           string `yaml:"id"`
 	Name         string `yaml:"name"`
 	VerifyScript string `yaml:"verifyScript"`
@@ -25,8 +25,8 @@ type flowRef struct {
 }
 
 type defaultV1Config struct {
-	State []stateDef `yaml:"state"`
-	Flow  []flowRef  `yaml:"flow"`
+	Steps []stepDef `yaml:"steps"`
+	Flow  []flowRef `yaml:"flow"`
 }
 
 func NewDefaultV1(path string) *DefaultV1 {
@@ -47,19 +47,19 @@ func (d *DefaultV1) Parse() ([]Step, error) {
 		return nil, fmt.Errorf("parse yaml: %w", err)
 	}
 
-	return d.resolveFlow(cfg.State, cfg.Flow)
+	return d.resolveFlow(cfg.Steps, cfg.Flow)
 }
 
-func (d *DefaultV1) resolveFlow(states []stateDef, flow []flowRef) ([]Step, error) {
-	index := make(map[string]Step, len(states))
-	for _, s := range states {
+func (d *DefaultV1) resolveFlow(defs []stepDef, flow []flowRef) ([]Step, error) {
+	index := make(map[string]Step, len(defs))
+	for _, s := range defs {
 		verify, err := d.resolveScript(s.VerifyScript)
 		if err != nil {
-			return nil, fmt.Errorf("state %q: resolve verifyScript: %w", s.ID, err)
+			return nil, fmt.Errorf("step %q: resolve verifyScript: %w", s.ID, err)
 		}
 		exec, err := d.resolveScript(s.ExecScript)
 		if err != nil {
-			return nil, fmt.Errorf("state %q: resolve execScript: %w", s.ID, err)
+			return nil, fmt.Errorf("step %q: resolve execScript: %w", s.ID, err)
 		}
 
 		index[s.ID] = Step{
@@ -74,7 +74,7 @@ func (d *DefaultV1) resolveFlow(states []stateDef, flow []flowRef) ([]Step, erro
 	for _, ref := range flow {
 		s, ok := index[ref.ID]
 		if !ok {
-			return nil, fmt.Errorf("flow references state %q, but no matching state definition exists", ref.ID)
+			return nil, fmt.Errorf("flow references step %q, but no matching step definition exists", ref.ID)
 		}
 		steps = append(steps, s)
 	}

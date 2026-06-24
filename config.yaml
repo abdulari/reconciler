@@ -1,6 +1,6 @@
 parser: DefaultV1
 
-state:
+steps:
   - id: step1
     name: create file
     verifyScript: scripts/verify-file-exists.sh

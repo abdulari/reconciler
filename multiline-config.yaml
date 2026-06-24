@@ -1,6 +1,6 @@
 parser: DefaultV1
 
-state:
+steps:
   - id: step1
     name: create directory structure
     verifyScript: |
