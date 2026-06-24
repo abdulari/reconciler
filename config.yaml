@@ -1,0 +1,16 @@
+parser: DefaultV1
+
+state:
+  - id: step1
+    name: create file
+    verifyScript: scripts/verify-file-exists.sh
+    execScript: scripts/create-file.sh
+
+  - id: step2
+    name: file has content
+    verifyScript: scripts/verify-has-content.sh
+    execScript: scripts/write-content.sh
+
+flow:
+  - id: step1
+  - id: step2

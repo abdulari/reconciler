@@ -1,0 +1,1 @@
+test -f /tmp/reconciler-demo.txt

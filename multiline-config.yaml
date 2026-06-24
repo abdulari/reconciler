@@ -1,0 +1,24 @@
+parser: DefaultV1
+
+state:
+  - id: step1
+    name: create directory structure
+    verifyScript: |
+      test -d /tmp/reconciler-demo/multiline &&
+      test -f /tmp/reconciler-demo/multiline/hello.txt
+    execScript: |
+      mkdir -p /tmp/reconciler-demo/multiline
+      echo "hello from multiline execScript" > /tmp/reconciler-demo/multiline/hello.txt
+      echo "file created successfully"
+
+  - id: step2
+    name: verify file content matches
+    verifyScript: |
+      content=$(cat /tmp/reconciler-demo/multiline/hello.txt)
+      test "$content" = "hello from multiline execScript"
+    execScript: |
+      echo "hello from multiline execScript" > /tmp/reconciler-demo/multiline/hello.txt
+
+flow:
+  - id: step1
+  - id: step2
