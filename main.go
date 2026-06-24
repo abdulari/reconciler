@@ -68,6 +68,7 @@ func parseFlags() config {
 func flagSet() *flag.FlagSet {
 	fs := flag.NewFlagSet("reconciler", flag.ExitOnError)
 	fs.Usage = func() {
+		fmt.Println("\nReconciler - A CLI reconciliation loop engine written in Go.")
 		fmt.Fprintf(os.Stderr, "Usage: reconciler -config <file> [options]\n\nOptions:\n")
 		fs.PrintDefaults()
 	}
